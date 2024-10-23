@@ -1,0 +1,68 @@
+CUE: CONSULTAS
+
+DRILLING: PROFUNDIZANDO EN EL MODELO ADMINISTRADOR
+
+Para resolver este ejercicio, anteriormente debe haber revisado la lectura y los videos del CUE:
+
+Migraciones.
+
+EJERCICIO:
+
+Partiendo del modelo creado anteriormente (Fabrica y Productos):
+
+1. Obtenga todos los registros de fábricas y productos.
+
+R:
+Ejecutar los siguientes comandos:
+python manage.py shell
+
+from django.db import connection
+from productos.models import Fabricante, Producto
+
+fabricante_records = Fabricante.objects.all()
+producto_records = Producto.objects.all()
+
+print("Fabricantes:")
+for fabricante in fabricante_records:
+    print(fabricante)
+
+print("\nProductos:")
+for producto in producto_records:
+    print(producto)
+
+
+2. Obtenga los campos de nombre, precio, y fecha de vencimiento de los productos. Demuestre 
+también cuál es la consulta SQL que se genera del ORM.
+
+R:
+from django.db import connection
+from productos.models import Fabricante, Producto
+productos_fields = Producto.objects.values('nombre', 'precio', 'f_vencimiento')
+print(productos_fields)
+print(productos_fields.query)
+
+Consulta SQL: SELECT "productos_producto"."nombre", "productos_producto"."precio", "productos_producto"."f_vencimiento" FROM "productos_producto"
+
+
+3. Obtenga los productos donde el precio sea menor o igual a 2500, mostrando solo los campos 
+de nombre y precio, respectivamente. Demuestra también cuál es la consulta SQL que se 
+genera del ORM.
+
+R:
+from django.db import connection
+from productos.models import Fabricante, Producto
+productos_filtered = Producto.objects.filter(precio__lte=2500).values('nombre', 'precio')
+print(productos_filtered)
+print(productos_filtered.query)
+
+
+4. Consulte los productos que se vencen antes del año 2024, e imprima el nombre, precio, 
+f_vencimiento, y fabricante. Demuestre también cuál es la consulta SQL que se genera del 
+ORM
+
+R:
+from django.db import connection
+from productos.models import Fabricante, Producto
+productos_expiring = Producto.objects.filter(f_vencimiento__lt='2024-01-01').values('nombre', 'precio', 'f_vencimiento', 'fabricante')
+print(productos_expiring)
+print(productos_expiring.query)
